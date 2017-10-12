@@ -2,8 +2,8 @@
 ### TRƯƠNG QUANG TUẤN -1512640
 #### Email: 1512640@student.hcmus.edu.vn
 **1. Các chức năng**
-- Tạo ra TreeView bên trái, ListView bên phải.
-- Về TreeView 
+..- Tạo ra TreeView bên trái, ListView bên phải.
+..- Về TreeView 
 <ul>
 <li> Tạo node root là This PC</li>	
 <li> Lấy danh sách các ổ đĩa trong máy bằng hàm GetLogicalDriveStrings, thêm các ổ đĩa vào node root, tạo sẵn thuộc tính cChildren = true để báo hiệu có các node con. </li>
