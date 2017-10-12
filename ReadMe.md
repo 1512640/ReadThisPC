@@ -19,8 +19,12 @@
 </li> Tạo ra ListView có 4 cột: Tên, Loại, Thời gian chỉnh sửa, Dung lượng. </li>
 </ul>
 **II. Luồng sự kiện chính**
+
 1.Chạy chương trình lên, hiển thị node This PC trên TreeView bên trái ở trạng thái collapse (thu gọn). Bấm vào sẽ xổ xuống các node con là danh sách ổ đĩa.
+
 2. Bên ListView sẽ hiển thị các tập tin hoặc thư mục con tương ứng với TreeView. Double click để mở thư mục con hoặc chương trình mở mặc định đối với tập tin.
+
 **III. Các luồng sự kiện phụ**
+
 1.Cấp phát bộ nhớ động thay vì bộ nhớ tĩnh
 
