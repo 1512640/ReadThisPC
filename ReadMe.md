@@ -7,6 +7,7 @@
 
   2. Về TreeView 
 
+      * alo
 <ul>
 <li> Tạo node root là This PC</li>	
 <li> Lấy danh sách các ổ đĩa trong máy bằng hàm GetLogicalDriveStrings, thêm các ổ đĩa vào node root, tạo sẵn thuộc tính cChildren = true để báo hiệu có các node con. </li>
