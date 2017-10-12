@@ -1,2 +1,0 @@
-# ReadThisPC
-#Truogn7
