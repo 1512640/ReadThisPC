@@ -4,9 +4,11 @@
 **1.Các chức năng:**
        - Tạo ra TreeView bên trái, ListView bên phải. 
        - Về TreeView: 
-            +Tạo node root là This PC	
-            +Lấy danh sách các ổ đĩa trong máy bằng hàm GetLogicalDriveStrings, thêm các ổ đĩa vào node root, tạo sẵn thuộc tính cChildren = true để báo hiệu có các node con. 
-            +Bắt sự kiện Expanding, lấy ra đường dẫn dấu ở PARAM để biết mình phải xư lí thư mục nào, duyệt nội dung thư mục bằng FindFirstFile & FindNextFile, chỉ lấy các thư mục để thêm vào làm node con.
+            <ul>
+<li>+Tạo node root là This PC</li>	
+           <li> +Lấy danh sách các ổ đĩa trong máy bằng hàm GetLogicalDriveStrings, thêm các ổ đĩa vào node root, tạo sẵn thuộc tính cChildren = true để báo hiệu có các node con. </li>
+            <li>+Bắt sự kiện Expanding, lấy ra đường dẫn dấu ở PARAM để biết mình phải xư lí thư mục nào, duyệt nội dung thư mục bằng FindFirstFile & FindNextFile, chỉ lấy các thư mục để thêm vào làm node con.</li>
+</ul>
          -Về ListView:
             + Hiển thị toàn bộ thư mục và tập tin tương ứng với một đường dẫn
             + Bấm đôi vào một thư mục sẽ thấy toàn bộ thư mục con và tập tin.
