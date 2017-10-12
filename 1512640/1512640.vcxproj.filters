@@ -27,7 +27,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Duyệt_ổ_đĩa.h">
+    <ClInclude Include="1512640.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,12 +35,12 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Duyệt_ổ_đĩa.cpp">
+    <ClCompile Include="1512640.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Duyệt_ổ_đĩa.rc">
+    <ResourceCompile Include="1512640.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -48,13 +48,19 @@
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Duyệt_ổ_đĩa.ico">
+    <Image Include="1512640.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="images.bmp">
+    <Image Include="tải-xuống (1).ico">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="pikachu_documents_dock_icon_by_monicasaur-d38si64.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Download-icon_png.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

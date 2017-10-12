@@ -27,6 +27,7 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 HWND tree;
 HWND list;
+
 HIMAGELIST hImage;
 static WCHAR* B = new WCHAR[100];												// Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -34,16 +35,13 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
-	_In_ int       nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In_ LPWSTR    lpCmdLine,_In_ int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	// TODO: Place code here.
-
+	
 	// Initialize global strings
 	MyRegisterClass(hInstance);
 
@@ -305,7 +303,7 @@ void Add_tree(WCHAR* s, int cap, WCHAR* duongDan)
 	tv.item.cchTextMax = 100;
 	tv.item.pszText = s;
 	tv.item.iImage = 0;
-	tv.item.iSelectedImage = 1;
+	tv.item.iSelectedImage = 0;
 	tv.item.lParam = (LPARAM)duongDan;
 	tv.item.mask = TVIF_IMAGE  | TVIF_TEXT | TVIF_PARAM;
 	truoc = (HTREEITEM)SendMessage(tree, TVM_INSERTITEM, 0, (LPARAM)&tv);
@@ -361,18 +359,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		tree = CreateWindow(WC_TREEVIEW, 0, WS_VISIBLE | WS_CHILD | WS_BORDER |
 			TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT,
 			0, 0, rect.right * 3 / 10, rect.bottom, hWnd, (HMENU)ID_cay, 0, 0);
-		//Insert photo
-		hImage = ImageList_Create(16, 16, ILC_COLOR16, 2, 10);
-		bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP4));
-		ImageList_Add(hImage, bitmap, NULL);
-		SendMessage(tree, TVM_SETIMAGELIST, 0, (LPARAM)hImage);
 
 		// Lay o dia 
 		list = CreateWindow(WC_LISTVIEW, 0, LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_BORDER,
 			rect.left + rect.right * 3 / 10, 0, rect.right * 7 / 10, rect.bottom, hWnd, (HMENU)ID_list, 0, 0);
-
+		//Insert photo
+		hImage = ImageList_Create(20, 20, ILC_COLOR16, 2, 10);
+		bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP5));
+		ImageList_Add(hImage, bitmap, NULL);
+		SendMessage(tree, TVM_SETIMAGELIST, 0, (LPARAM)hImage);
 		Add_tree(L"PC", 0, L"PC ");
 		thu_muc(L"PC", 0);
+
 		do 
 		{
 			WCHAR* dia = new WCHAR [100];
