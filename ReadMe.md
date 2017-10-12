@@ -1,9 +1,11 @@
-﻿# Read This PC detail:
+﻿# Read This PC detail
 ### TRƯƠNG QUANG TUẤN -1512640
 #### Email: 1512640@student.hcmus.edu.vn
 **I. Các chức năng**
 
+
 ..1.Tạo ra TreeView bên trái, ListView bên phải.
+
 
 ..2.Về TreeView 
 
