@@ -19,9 +19,9 @@
 
 **II. Luồng sự kiện chính**
 
-    * Chạy chương trình lên, hiển thị node This PC trên TreeView bên trái ở trạng thái collapse (thu gọn). Bấm vào sẽ xổ xuống các node con là danh sách ổ đĩa.
+    - Chạy chương trình lên, hiển thị node This PC trên TreeView bên trái ở trạng thái collapse (thu gọn). Bấm vào sẽ xổ xuống các node con là danh sách ổ đĩa.
 
-    * Bên ListView sẽ hiển thị các tập tin hoặc thư mục con tương ứng với TreeView. Double click để mở thư mục con hoặc chương trình mở mặc định đối với tập tin.
+    - Bên ListView sẽ hiển thị các tập tin hoặc thư mục con tương ứng với TreeView. Double click để mở thư mục con hoặc chương trình mở mặc định đối với tập tin.
 
 **III. Các luồng sự kiện phụ**
 
