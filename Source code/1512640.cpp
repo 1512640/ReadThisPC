@@ -1,14 +1,20 @@
 ﻿// Duyệt_ổ_đĩa.cpp : Defines the entry point for the application.
 //
-
 #include "stdafx.h"
 #include <CommCtrl.h>
-#include <shellapi.h>
 #include <time.h>
 #include "resource.h"
-#pragma comment(lib, "comctl32.lib")
 #include "1512640.h"
+
+#include <Windows.h>
+#include <Shobjidl.h>
+#include <Shellapi.h>
 #include <shlwapi.h>
+#include <Shlobj.h>
+
+
+#pragma comment(lib, "comctl32.lib")
+#pragma comment (lib,"Shell32.lib")
 #pragma comment(lib, "shlwapi.lib")
 #define ENTIRE_STRING NULL
 #define ID_cay 333
@@ -19,6 +25,7 @@
 #define GB 3
 #define TB 4
 #define RADIX 10
+void Add_tree(WCHAR* s, int cap, WCHAR* duongDan);
 void Add_List(WCHAR* s, WCHAR *duongDan, int cap, WCHAR* thoigian,WCHAR* kichthuoc,WCHAR* loai);
 void list_thu_muc(WCHAR* cha);
 // Global Variables:
@@ -27,14 +34,83 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 HWND tree;
 HWND list;
-
+HWND head;
+HWND status;
+int wtree = 222;
+int xbatdau;
+bool check = FALSE;
 HIMAGELIST hImage;
+HIMAGELIST hil;
 static WCHAR* B = new WCHAR[100];												// Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+void DuyetFile(LPSHELLFOLDER cha, LPITEMIDLIST condautien, int dem, int cap)
+{
+	//if (dem == 6) return;
+	LPSHELLFOLDER con = NULL;
+	cha->BindToObject(condautien, NULL, IID_IShellFolder, (LPVOID*)&con);// ép thành cha
+	if (con == NULL)
+		return;
+	LPENUMIDLIST danhsach = NULL;
+	HRESULT hr = con->EnumObjects(NULL, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, &danhsach);
+	if (danhsach == NULL)
+		return;
+	LPITEMIDLIST dungdeduyet = NULL;
+	cap++;
+	while (1)
+	{
+		hr = danhsach->Next(1, &dungdeduyet, NULL);
+		if (hr != S_OK)
+			break;
+		WCHAR chuoi[1000];
+		chuoi[0] = 0;
+		WCHAR chuoitenfile[1000];
+		STRRET xuat;
+		con->GetDisplayNameOf(dungdeduyet, SHGDN_NORMAL, &xuat);
+
+		StrRetToBuf(&xuat, dungdeduyet, chuoitenfile, 1000);
+		wcscat(chuoi, chuoitenfile);
+		if (wcscmp(chuoi, L"") != 0)
+		{
+			//wprintf(L"  %s\n", chuoi);
+			Add_tree(chuoi, cap, L" ");
+		}
+		DuyetFile(con, dungdeduyet, dem+1 ,cap);
+	}
+}
+void DuyetDestop()
+{
+	//wsprintf(L"ThisPC: \n",L" ",0);
+	LPSHELLFOLDER destop;
+	SHGetDesktopFolder(&destop);
+	LPENUMIDLIST tam = NULL;
+	destop->EnumObjects(NULL, SHCONTF_FOLDERS, &tam);
+	LPITEMIDLIST duyet = NULL;
+	HRESULT hr = NULL;
+	int dem = 0;
+	//do
+	{
+		hr = tam->Next(1, &duyet, NULL);
+		WCHAR *chuoi = new WCHAR[255];
+		chuoi[0] = 0;
+		STRRET xuat;
+		destop->GetDisplayNameOf(duyet, SHGDN_NORMAL, &xuat);
+		StrRetToBuf(&xuat, duyet, chuoi, 255);
+		Add_tree(chuoi, 1, L" "); //Them vao tree
+		if (wcscmp(chuoi, L"") != 0)
+		{
+			//if (dem == 0)
+			{
+				dem++;
+				DuyetFile(destop, duyet, 0 ,1);			
+			}
+		}
+	} //while (hr == S_OK);
+	 
+}
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In_ LPWSTR    lpCmdLine,_In_ int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -105,7 +181,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	return TRUE;
 }
-
 LPWSTR Loai(const WIN32_FIND_DATA &fd)
 {
 	int nDotPos = StrRStrI(fd.cFileName, ENTIRE_STRING, _T(".")) - fd.cFileName;
@@ -232,6 +307,7 @@ void Mo_file(WCHAR* kt)
 		list_thu_muc(kt);
 		return;
 	}
+	
 	ShellExecute(NULL, L"open", kt, NULL, NULL, SW_SHOWNORMAL);
 }
 WCHAR* lay_thoi_gian(WIN32_FIND_DATA f32)
@@ -351,29 +427,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		MessageBox(hWnd, L"Khong tim thay o dia nao", L"Error", MB_OK | MB_ICONERROR);
 	int i = 0;
 	int cap = 1;
+	
 	switch (message)
 	{
+	
+	case WM_SIZE:
+		GetClientRect(hWnd, &rect);
+		MoveWindow(tree, 3, 30, wtree,rect.bottom -80,1);
+		MoveWindow(list, wtree + 7, 30, rect.right - wtree - 13, rect.bottom - 80, 1);
+		MoveWindow(status, 3, rect.bottom - 20, rect.right - 3, 40, 1);
+		MoveWindow(head, wtree + 7, 0, rect.right - wtree - 13, 30, 1);
+		break;
 	case WM_CREATE:
 	{
 		InitCommonControls();
 		tree = CreateWindow(WC_TREEVIEW, 0, WS_VISIBLE | WS_CHILD | WS_BORDER |
 			TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT,
-			0, 0, rect.right * 3 / 10, rect.bottom, hWnd, (HMENU)ID_cay, 0, 0);
+			0, 0, 200, 400, hWnd, (HMENU)ID_cay, 0, 0);
 
-		// Lay o dia 
-		list = CreateWindow(WC_LISTVIEW, 0, LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_BORDER,
-			rect.left + rect.right * 3 / 10, 0, rect.right * 7 / 10, rect.bottom, hWnd, (HMENU)ID_list, 0, 0);
+		
+		list = CreateWindow(WC_LISTVIEW, 0, LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_BORDER|LVS_ICON ,
+			200,0,300,400, hWnd, (HMENU)ID_list, 0, 0);
+	
+
+		status = CreateWindow(STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, 0, 0, 0, 0, hWnd,NULL, hInst, NULL);
+		int size[] = { 200,400,600,-1 };
+		SendMessage(status, SB_SETPARTS, 4, (LPARAM)&size);
+		SendMessage(status, SB_SETMINHEIGHT, 40, 0);
+		
+		head =  CreateWindow(WC_EDIT, L"",  WS_VISIBLE | WS_CHILD|WS_BORDER ,
+								0, 0, 0, 0, hWnd, NULL, hInst, NULL);
 		//Insert photo
 		hImage = ImageList_Create(20, 20, ILC_COLOR16, 2, 10);
 		bitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP5));
 		ImageList_Add(hImage, bitmap, NULL);
 		SendMessage(tree, TVM_SETIMAGELIST, 0, (LPARAM)hImage);
+	
+		
 		Add_tree(L"PC", 0, L"PC ");
 		thu_muc(L"PC", 0);
-
-		do 
+		 
+		do  //duyet o dia
 		{
-			WCHAR* dia = new WCHAR [100];
+			WCHAR* dia = new WCHAR[100];
 			dia[0] = temp[i];
 			dia[1] = ':';
 			dia[2] = '\0';
@@ -382,6 +478,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Add_List(dia, dia, 0, L"", L"", L"");
 			i = i + 8;
 		} while (temp[i] != NULL);
+
 		LVCOLUMN cot;
 		cot.cchTextMax = 100;
 		cot.pszText = L"TÊN";
@@ -392,19 +489,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ListView_InsertColumn(list, 0, &cot);
 
 		cot.pszText = L"NGÀY";
-		cot.cx = 150;
+		cot.cx = 200;
 		ListView_InsertColumn(list, 1, &cot);
 
 		cot.pszText = L"LOẠI";
-		cot.cx = 200;
+		cot.cx = 150;
 		ListView_InsertColumn(list, 2, &cot);
 
 		cot.pszText = L"KÍCH THƯỚC";
-		cot.cx = 200;
+		cot.cx = rect.right -13-550-wtree;
 		ListView_InsertColumn(list, 3, &cot);
 		break;
 	}
-	break;
+	case WM_MOUSEMOVE:
+	{
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+		if (x >= wtree  && x <= wtree + 10);
+		{
+			SetCursor(LoadCursor(NULL,IDC_SIZEWE));
+		}
+		if (check == true)
+		{
+			wtree = wtree + x - xbatdau;
+			SendMessage(hWnd, WM_SIZE, 0, 0);
+		}
+		xbatdau = x;
+		break;
+	}
+	case WM_LBUTTONDOWN:
+	{
+	
+		xbatdau = LOWORD(lParam);
+		if (xbatdau >= wtree - 10 && xbatdau <= wtree + 5)
+		{
+			SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+			check = true;
+			SetCapture(hWnd);
+		}
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		check = false;
+		ReleaseCapture();
+		break;
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -412,9 +542,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == ID_cay)
 		{
+
 			if (((LPNMHDR)lParam)->code == NM_DBLCLK)
 			{
-				WCHAR* A = new WCHAR [100];
+				WCHAR* A = new WCHAR[100];
 				TVITEM HTREE;
 				HTREE.cchTextMax = 100;
 				HTREEITEM a = (HTREEITEM)TreeView_GetSelection(tree);
@@ -439,7 +570,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ListView_GetItem(list, &l);
 					Mo_file((WCHAR*)l.lParam);
 				}
+				break;
 			}
+			if (((LPNMHDR)lParam)->code == NM_CLICK)
+			{
+				LVITEM l;
+				l.iItem = ListView_GetNextItem(list, -1, LVNI_SELECTED);
+				if (l.iItem >= 0)
+				{
+					WIN32_FIND_DATA f;
+					ListView_GetItem(list, &l);
+					SendMessage(head, WM_SETTEXT, 0, (LPARAM)l.lParam);
+					WCHAR thuMuc[MAX_PATH];
+					HANDLE tim = FindFirstFile((LPWSTR)l.lParam, &f);
+					if (tim != INVALID_HANDLE_VALUE)
+					{
+						WORD a;
+						FindNextFile(tim, &f);
+						//Ghi vao thanh status bar
+						SendMessage(status, SB_SETICON, 0, (LPARAM)ExtractAssociatedIconW(hInst, (LPWSTR)l.lParam, &a));
+						SendMessage(status, SB_SETTEXT, 1, (LPARAM)f.cFileName);
+						SendMessage(status, SB_SETTEXT, 2, (LPARAM)kich_thuoc(f));
+					}
+				}
+			}
+			break;
 		}
 	}
 	break;
